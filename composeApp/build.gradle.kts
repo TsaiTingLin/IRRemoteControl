@@ -7,10 +7,11 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.google.services)
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
     androidTarget {
         //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
@@ -24,6 +25,7 @@ kotlin {
         it.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbinary=bundleId=com.tsaiting.irremotecontrol")
         }
     }
 
@@ -42,6 +44,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.gitlive.firestore)
         }
 
         commonTest.dependencies {
@@ -55,6 +58,7 @@ kotlin {
             implementation(compose.uiTooling)
             implementation(libs.androidx.activityCompose)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(project.dependencies.platform(libs.firebase.bom))
         }
 
     }
@@ -65,10 +69,10 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
         targetSdk = 35
 
-        applicationId = "com.tsaiting.irremotecontrol.androidApp"
+        applicationId = "com.tsaiting.irremotecontrol"
         versionCode = 1
         versionName = "1.0.0"
 

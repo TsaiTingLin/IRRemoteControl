@@ -25,6 +25,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +42,7 @@ import com.tsaiting.irremotecontrol.theme.color_344955
 import com.tsaiting.irremotecontrol.theme.color_4a6572
 import com.tsaiting.irremotecontrol.theme.color_f9aa33
 import com.tsaiting.irremotecontrol.view.data.DashboardItem
-import com.tsaiting.irremotecontrol.view.data.DeviceType
+import com.tsaiting.irremotecontrol.view.data.DeviceTypeUi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -50,7 +51,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DashBoardScreen(viewModel: DashboardViewModel = koinViewModel()) {
     val itemMap by viewModel.dashboardItems.collectAsState()
-    var showType by remember { mutableStateOf<DeviceType?>(null) }
+    var showType by remember { mutableStateOf<DeviceTypeUi?>(null) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     showType?.let {
         DeviceDetailBottomSheet(
@@ -68,11 +69,15 @@ fun DashBoardScreen(viewModel: DashboardViewModel = koinViewModel()) {
             showType = it
         }
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.getDeviceState()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeviceDetailBottomSheet(type: DeviceType, sheetState: SheetState, onDismiss: () -> Unit) {
+fun DeviceDetailBottomSheet(type: DeviceTypeUi, sheetState: SheetState, onDismiss: () -> Unit) {
     ModalBottomSheet(
         modifier = Modifier.heightIn(min = 200.dp),
         onDismissRequest = {
@@ -81,7 +86,7 @@ fun DeviceDetailBottomSheet(type: DeviceType, sheetState: SheetState, onDismiss:
         sheetState = sheetState
     ) {
         when (type) {
-            DeviceType.TV -> {
+            DeviceTypeUi.TV -> {
             }
 
             else -> {
@@ -94,9 +99,9 @@ fun DeviceDetailBottomSheet(type: DeviceType, sheetState: SheetState, onDismiss:
 @Composable
 fun DashboardView(
     modifier: Modifier = Modifier,
-    itemMap: Map<DeviceType, DashboardItem>,
-    onPowerClick: (DeviceType) -> Unit,
-    onItemClick: (DeviceType) -> Unit
+    itemMap: Map<DeviceTypeUi, DashboardItem>,
+    onPowerClick: (DeviceTypeUi, Boolean) -> Unit,
+    onItemClick: (DeviceTypeUi) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -122,16 +127,18 @@ fun DashboardView(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            items(items = DeviceType.values()) { deviceType ->
-                val isOn = itemMap[deviceType]?.inOn ?: false
+            items(items = DeviceTypeUi.values()) { deviceType ->
+                val device = itemMap[deviceType] ?: DashboardItem(deviceType, "Room", false)
+                val isOn = device.inOn
+                val place = device.place
                 Item(
                     item = DashboardItem(
-                        deviceType = deviceType,
-                        place = "Living Room",
+                        deviceTypeUi = deviceType,
+                        place = place,
                         inOn = isOn
                     ),
                     onPowerClick = {
-                        onPowerClick(deviceType)
+                        onPowerClick(deviceType, isOn)
                     },
                     onItemClick = {
                         onItemClick(deviceType)
@@ -162,7 +169,7 @@ fun Item(item: DashboardItem, onPowerClick: () -> Unit, onItemClick: () -> Unit)
         ) {
             Icon(
                 modifier = Modifier.size(32.dp),
-                painter = painterResource(item.deviceType.getIconRes()),
+                painter = painterResource(item.deviceTypeUi.getIconRes()),
                 contentDescription = null,
                 tint = color_232f34,
             )
@@ -179,7 +186,7 @@ fun Item(item: DashboardItem, onPowerClick: () -> Unit, onItemClick: () -> Unit)
         }
         Column {
             Text(
-                text = item.deviceType.getIconName(),
+                text = item.deviceTypeUi.getIconName(),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = color_232f34,

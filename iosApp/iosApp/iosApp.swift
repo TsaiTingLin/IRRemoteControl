@@ -1,5 +1,7 @@
 import UIKit
 import ComposeApp
+import FirebaseCore
+import FirebaseStorage
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -10,6 +12,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         KoinKt.doInitKoin()
+        FirebaseApp.configure()
+
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
             window.rootViewController = MainKt.MainViewController()

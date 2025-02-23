@@ -6,10 +6,10 @@ import irremotecontrol.composeapp.generated.resources.icon_fan
 import irremotecontrol.composeapp.generated.resources.icon_tv
 import org.jetbrains.compose.resources.DrawableResource
 
-sealed class DeviceType {
-    data object AC : DeviceType()
-    data object TV : DeviceType()
-    data object Fan : DeviceType()
+sealed class DeviceTypeUi(val key: String) {
+    data object AC : DeviceTypeUi("acState")
+    data object TV : DeviceTypeUi("tvState")
+    data object Fan : DeviceTypeUi("fanState")
 
     fun getIconRes(): DrawableResource {
         return when (this) {
@@ -29,5 +29,8 @@ sealed class DeviceType {
 
     companion object {
         fun values() = listOf(TV, AC, Fan)
+        fun fromKey(key: String): DeviceTypeUi {
+            return values().first { it.key == key }
+        }
     }
 }
