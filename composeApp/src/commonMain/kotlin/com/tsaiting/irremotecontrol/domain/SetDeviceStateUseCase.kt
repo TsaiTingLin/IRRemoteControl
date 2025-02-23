@@ -1,9 +1,11 @@
 package com.tsaiting.irremotecontrol.domain
 
+import com.tsaiting.irremotecontrol.domain.repo.DeviceStateRepository
+
 
 class SetDeviceStateUseCase(
     private val deviceStateRepository: DeviceStateRepository
 ) {
     suspend operator fun invoke(key: String, power: Boolean) = deviceStateRepository
-        .updateDeviceState(key, power)
+        .updateDevicePowerState(key, power)
 }

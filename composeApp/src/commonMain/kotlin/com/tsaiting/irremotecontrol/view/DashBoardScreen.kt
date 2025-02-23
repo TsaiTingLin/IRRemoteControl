@@ -43,6 +43,7 @@ import com.tsaiting.irremotecontrol.theme.color_4a6572
 import com.tsaiting.irremotecontrol.theme.color_f9aa33
 import com.tsaiting.irremotecontrol.view.data.DashboardItem
 import com.tsaiting.irremotecontrol.view.data.DeviceTypeUi
+import com.tsaiting.irremotecontrol.view.tvcontroller.TVControllerScreen
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -87,6 +88,7 @@ fun DeviceDetailBottomSheet(type: DeviceTypeUi, sheetState: SheetState, onDismis
     ) {
         when (type) {
             DeviceTypeUi.TV -> {
+                TVControllerScreen(onBackClick = onDismiss)
             }
 
             else -> {

@@ -1,6 +1,7 @@
 package com.tsaiting.irremotecontrol.domain
 
 import com.tsaiting.irremotecontrol.domain.data.DeviceModel
+import com.tsaiting.irremotecontrol.domain.repo.DeviceStateRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

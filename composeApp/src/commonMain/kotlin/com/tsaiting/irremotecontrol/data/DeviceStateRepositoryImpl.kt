@@ -1,7 +1,7 @@
 package com.tsaiting.irremotecontrol.data
 
-import com.tsaiting.irremotecontrol.domain.DeviceStateRepository
 import com.tsaiting.irremotecontrol.domain.data.DeviceStateResponse
+import com.tsaiting.irremotecontrol.domain.repo.DeviceStateRepository
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.toMilliseconds
@@ -26,7 +26,7 @@ class DeviceStateRepositoryImpl(
         }
         .flowOn(ioDispatcher)
 
-    override suspend fun updateDeviceState(id: String, power: Boolean, place: String) =
+    override suspend fun updateDevicePowerState(id: String, power: Boolean, place: String) =
         withContext(ioDispatcher) {
             val data = DeviceStateResponse(
                 power = power,
