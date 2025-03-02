@@ -28,17 +28,20 @@ class DeviceStateRepositoryImpl(
 
     override suspend fun updateDevicePowerState(id: String, power: Boolean, place: String) =
         withContext(ioDispatcher) {
-            val data = DeviceStateResponse(
-                power = power,
-                place = place,
-                timeInMillis = Timestamp.now().toMilliseconds().toLong()
+            val data = mapOf(
+                POWER to power,
+                TIME_IN_MILLIS to Timestamp.now().toMilliseconds().toLong(),
+                COMMAND to "0",
             )
             fireStore.collection(PATH)
                 .document(id)
-                .set(data)
+                .set(data = data, merge = true)
         }
 
     companion object {
         private const val PATH = "deviceState"
+        private const val TIME_IN_MILLIS = "timeInMillis"
+        private const val POWER = "power"
+        private const val COMMAND = "command"
     }
 }
